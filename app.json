@@ -11,9 +11,23 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "We need access to your camera for scanning QR codes."
+      },
+      "bundleIdentifier": "com.somemeat.bukalemun"
     },
-    "android": {},
-    "web": {}
+    "android": {
+      "package": "com.somemeat.bukalemun",
+      "permissions": [
+        "CAMERA"
+      ]
+    },
+    "web": {},
+    "extra": {
+      "eas": {
+        "projectId": "9ac02e7c-a31f-40da-a30c-bf47a3e885da"
+      }
+    }
   }
 }

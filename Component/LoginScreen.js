@@ -1,26 +1,44 @@
-import React,{ useState } from "react";
-import {View,Text,TextInput,TouchableOpacity,StyleSheet,Linking,ImageBackground} from "react-native";
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Alert } from "react-native";
+import { auth } from '../firebase';
+import { signInWithEmailAndPassword } from "firebase/auth";
+
 export const LoginScreen = ({ navigation }) => {
-  const [Ad, setAd] = useState("");
+  const [ad, setAd] = useState("");  // Email adresi
   const [şifre, setŞifre] = useState("");
 
-  const handleSubmit = () => {
-      navigation.navigate("Home");
+  // Giriş yapma işlemi
+  const handleLogin = () => {
+    if (!ad || !şifre) {
+      alert("Lütfen tüm alanları doldurun");
+      return;
+    }
+
+    // Firebase Authentication ile giriş yapma
+    signInWithEmailAndPassword(auth, ad, şifre)
+      .then(() => {
+        Alert.alert("Başarılı", "Giriş yapıldı.");
+        navigation.navigate("Home");  // Başarılı giriş sonrası Home ekranına yönlendir
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("şifre veya kullanıcı adı hatalı " );
+      });
   };
 
   return (
-      <ImageBackground source={require("../assets/Giris.jpg")} // Resminizin doğru yolu
-      style={styles.backgroundImage}>
-        <View style={styles.container}>
+    <ImageBackground source={require("../assets/Giris.jpg")} style={styles.backgroundImage}>
+      <View style={styles.container}>
         <View style={styles.formContainer}>
           <Text style={styles.formTitle}>Renklensin Evimiz</Text>
           <View style={styles.formGroup}>
-            <Text style={styles.label}>Kullanıcı Adı</Text>
+            <Text style={styles.label}>Kullanıcı Adı (Email)</Text>
             <TextInput
               style={styles.input}
-              value={Ad}
+              value={ad}
               onChangeText={setAd}
-              placeholder="Kullanıcı Adı"
+              placeholder="Email"
+              keyboardType="email-address"
             />
           </View>
 
@@ -36,19 +54,17 @@ export const LoginScreen = ({ navigation }) => {
           </View>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
               <Text style={styles.buttonText}>Giriş</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => Linking.openURL("your-signup-link")}
-            >
-              <Text style={styles.link} onPress={()=>navigation.navigate("Hesap")}>Hesap Oluştur</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Hesap")}>
+              <Text style={styles.link}>Hesap Oluştur</Text>
             </TouchableOpacity>
           </View>
         </View>
-        </View>
-      </ImageBackground>
+      </View>
+    </ImageBackground>
   );
 };
 
